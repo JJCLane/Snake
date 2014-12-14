@@ -129,9 +129,13 @@ Snake.prototype.eatingFood = function() {
 	return false;
 }
 
-Snake.prototype.colliding = function() {
+Snake.prototype.colliding = function(x, y) {
+	// Default to checking body collision
+	var x = x || this.nx,
+		y = y || this.ny;
 	for(var i = 0; i < this.array.length; i++) {
-		if(this.array[i].x === this.nx && this.array[i].y === this.ny) {
+		if(this.array[i].x === x && this.array[i].y === y) {
+			
 			return true;
 		}
 	}
@@ -139,11 +143,22 @@ Snake.prototype.colliding = function() {
 }
 
 function Food() {
-	this.x = Math.round(Math.random() * (canvas.width-canvas.cellWidth)/canvas.cellWidth);
-	this.y = Math.round(Math.random() * (canvas.height-canvas.cellWidth)/canvas.cellWidth);
-	this.draw = function(){
-		canvas.paint(this.x, this.y);
+	this.generateCoords = function() {
+		this.x = Math.round(Math.random() * (canvas.width-canvas.cellWidth)/canvas.cellWidth);
+		this.y = Math.round(Math.random() * (canvas.height-canvas.cellWidth)/canvas.cellWidth);
+		this.checkCollision();
 	};
+	this.checkCollision = function() {
+		if(mainSnake.colliding(this.x, this.y)) {
+			this.generateCoords();
+		}
+	};
+	this.draw = function(){
+		canvas.paint(this.x, this.y, 'blue');
+	};
+
+	this.generateCoords();
+	this.checkCollision();
 	this.draw();
 
 }
@@ -159,12 +174,14 @@ game.runLoop = function(){
 	setTimeout(function() {
         requestAnimationFrame(game.runLoop);
 		mainSnake.move();
-		food.draw();
+		if(typeof food.draw != 'undefined') {
+			food.draw();
+		}
 		game.drawScore();
     }, 1000 / game.fps);
 };
 game.start = function() {
-	mainSnake = new Snake(5, 'red', 'white', {x: 5, y: 5});
+	mainSnake = new Snake(10, 'red', 'white', {x: 5, y: 5});
 	food = new Food();
 	game.score = 0;
 };
