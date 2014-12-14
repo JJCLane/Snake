@@ -1,4 +1,5 @@
 var canvas = new Object();
+var mainSnake;
 
 
 canvas.element = document.getElementById('canvas');
@@ -66,6 +67,11 @@ Snake.prototype.move = function() {
 			break;
 	}
 
+	if(this.outsideBounds(nx, ny)) {
+		game.over();
+		return;
+	}
+
 	var tail = this.array.pop();
 	tail.x = nx;
 	tail.y = ny;
@@ -90,26 +96,44 @@ Snake.prototype.paint = function() {
 	}
 }
 
+Snake.prototype.outsideBounds = function(nx, ny) {
+	if(nx <= -1 || nx === canvas.width/this.cellWidth || ny <= -1 || ny === canvas.height/this.cellWidth) {
+		return true;
+	}
+	return false;
+}
 
-var mainSnake = new Snake(5, 10, 'red', 'white', {x: 5, y: 5});
 
 var game = new Object();
 game.runLoop = function(){
 	mainSnake.move();
-}
-game.loop = setInterval(game.runLoop, 60);
+};
+game.start = function() {
+	mainSnake = new Snake(5, 10, 'red', 'white', {x: 5, y: 5});
+	this.loop = setInterval(game.runLoop, 60);
+};
+game.over = function(){
+	clearInterval(this.loop);
+	canvas.redraw();
+	this.start();
+};
+
+game.start();
 
 
 
 document.onkeydown = function(e) {
-	var key = (e.keyCode ? e.keyCode : e.which);
-	if(key == "37" && mainSnake.direction != 'right') {
-		mainSnake.direction = 'left';
-	} else if(key == "38" && mainSnake.direction != 'down') {
-		mainSnake.direction = 'up';
-	} else if(key == "39" && mainSnake.direction != 'left') {
-		mainSnake.direction = 'right';
-	} else if(key == "40" && mainSnake.direction != 'up') {
-		mainSnake.direction = 'down';
+	if(typeof mainSnake !== 'undefined'){
+		// Cross browser keycode detection
+		var key = (e.keyCode ? e.keyCode : e.which);
+		if(key == "37" && mainSnake.direction != 'right') {
+			mainSnake.direction = 'left';
+		} else if(key == "38" && mainSnake.direction != 'down') {
+			mainSnake.direction = 'up';
+		} else if(key == "39" && mainSnake.direction != 'left') {
+			mainSnake.direction = 'right';
+		} else if(key == "40" && mainSnake.direction != 'up') {
+			mainSnake.direction = 'down';
+		}
 	}
 }
