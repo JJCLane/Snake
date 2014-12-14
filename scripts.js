@@ -7,13 +7,17 @@ canvas.width = canvas.element.getAttribute('width');
 canvas.height = canvas.element.getAttribute('height');
 
 canvas.redraw = function(fillColour, strokeColour){
+	// Add default canvas colour options
+	var fillColour = fillColour || 'white',
+		strokeColour = strokeColour || 'black';
+
 	this.context.fillStyle = fillColour;
 	this.context.fillRect(0, 0, this.width, this.height);
 	this.context.strokeStyle = strokeColour;
 	this.context.strokeRect(0, 0, this.width, this.height);
 }
 
-canvas.redraw('white', 'black');
+canvas.redraw();
 
 /**
 * The snake class creates and controls any snakes in the game.
@@ -22,13 +26,17 @@ canvas.redraw('white', 'black');
 * @constructor
 * @param {int} length The intial length of the snake
 * @param {int} cellWidth The width of each snake body part
+* @param {string} bodyColour The colour of each snake body part
+* @param {string} outlineColour The stroke colour of each snake body part
 * @param {object} startingPos The X and Y position for the snake spawn
 */
-function Snake(length, cellWidth, startingPos) {
+function Snake(length, cellWidth, bodyColour, outlineColour, startingPos) {
 	this.length = length;
 	this.cellWidth = cellWidth;
+	this.bodyColour = bodyColour;
+	this.outlineColour = outlineColour;
 	this.array = [];
-	this.direction = 'right'
+	this.direction = 'right';
 	
 	var startingPos = startingPos;
 	this.create = function(){
@@ -68,22 +76,22 @@ Snake.prototype.move = function() {
 }
 
 Snake.prototype.paint = function() {
-	canvas.redraw('white', 'black');
+	canvas.redraw();
 	for(var i = 0; i < this.array.length; i++) {
 		// The current snake body element
 		var j = this.array[i];
 
 		// Store argument properties to keep things DRY
 		var props = [j.x*this.cellWidth, j.y*this.cellWidth, this.cellWidth, this.cellWidth];
-		canvas.context.fillStyle = 'red';
+		canvas.context.fillStyle = this.bodyColour;
 		canvas.context.fillRect(props[0], props[1], props[2], props[3]);
-		canvas.context.strokeStyle = 'yellow';
+		canvas.context.strokeStyle = this.outlineColour;
 		canvas.context.strokeRect(props[0], props[1], props[2], props[3]);
 	}
 }
 
 
-var mainSnake = new Snake(5, 10, {x: 5, y: 5});
+var mainSnake = new Snake(5, 10, 'red', 'white', {x: 5, y: 5});
 
 var game = new Object();
 game.runLoop = function(){
