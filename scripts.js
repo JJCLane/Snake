@@ -29,6 +29,12 @@ canvas.paint = function(x, y, fillColour, strokeColour, width, height) {
 	this.context.strokeRect(x*canvas.cellWidth, y*canvas.cellWidth, width, height);
 };
 
+canvas.paintText = function(text, x, y) {
+	var x = x || 5,
+		y = y || 15;
+	this.context.fillText(text, x, y);
+};
+
 canvas.redraw();
 
 /**
@@ -85,6 +91,7 @@ Snake.prototype.move = function() {
 	}
 
 	if(this.eatingFood()) {
+		game.score++;
 		tail = {x: this.nx, y: this.ny};
 		food = new Food();
 	} else {
@@ -135,7 +142,6 @@ function Food() {
 	this.x = Math.round(Math.random() * (canvas.width-canvas.cellWidth)/canvas.cellWidth);
 	this.y = Math.round(Math.random() * (canvas.height-canvas.cellWidth)/canvas.cellWidth);
 	this.draw = function(){
-		console.log(this.x, this.y);
 		canvas.paint(this.x, this.y);
 	};
 	this.draw();
@@ -144,14 +150,22 @@ function Food() {
 
 
 var game = new Object();
+game.score = 0;
+game.scoreText = 'Score: ';
+game.drawScore = function() {
+	console.log(this);
+	canvas.paintText(this.scoreText + this.score);
+};
 game.runLoop = function(){
 	mainSnake.move();
 	food.draw();
+	game.drawScore();
 
 };
 game.start = function() {
 	mainSnake = new Snake(5, 'red', 'white', {x: 5, y: 5});
 	food = new Food();
+	game.score = 0;
 	this.loop = setInterval(game.runLoop, 60);
 };
 game.over = function(){
