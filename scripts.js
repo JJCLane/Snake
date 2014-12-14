@@ -6,6 +6,7 @@ canvas.element = document.getElementById('canvas');
 canvas.context = canvas.element.getContext('2d');
 canvas.width = canvas.element.getAttribute('width');
 canvas.height = canvas.element.getAttribute('height');
+canvas.cellWidth = 10;
 
 canvas.redraw = function(fillColour, strokeColour){
 	// Add default canvas colour options
@@ -26,14 +27,12 @@ canvas.redraw();
 * @class Snake
 * @constructor
 * @param {int} length The intial length of the snake
-* @param {int} cellWidth The width of each snake body part
 * @param {string} bodyColour The colour of each snake body part
 * @param {string} outlineColour The stroke colour of each snake body part
 * @param {object} startingPos The X and Y position for the snake spawn
 */
-function Snake(length, cellWidth, bodyColour, outlineColour, startingPos) {
+function Snake(length, bodyColour, outlineColour, startingPos) {
 	this.length = length;
-	this.cellWidth = cellWidth;
 	this.bodyColour = bodyColour;
 	this.outlineColour = outlineColour;
 	this.array = [];
@@ -88,7 +87,7 @@ Snake.prototype.paint = function() {
 		var j = this.array[i];
 
 		// Store argument properties to keep things DRY
-		var props = [j.x*this.cellWidth, j.y*this.cellWidth, this.cellWidth, this.cellWidth];
+		var props = [j.x*canvas.cellWidth, j.y*canvas.cellWidth, canvas.cellWidth, canvas.cellWidth];
 		canvas.context.fillStyle = this.bodyColour;
 		canvas.context.fillRect(props[0], props[1], props[2], props[3]);
 		canvas.context.strokeStyle = this.outlineColour;
@@ -97,7 +96,7 @@ Snake.prototype.paint = function() {
 }
 
 Snake.prototype.outsideBounds = function(nx, ny) {
-	if(nx <= -1 || nx === canvas.width/this.cellWidth || ny <= -1 || ny === canvas.height/this.cellWidth) {
+	if(nx <= -1 || nx === canvas.width/canvas.cellWidth || ny <= -1 || ny === canvas.height/canvas.cellWidth) {
 		return true;
 	}
 	return false;
@@ -109,7 +108,7 @@ game.runLoop = function(){
 	mainSnake.move();
 };
 game.start = function() {
-	mainSnake = new Snake(5, 10, 'red', 'white', {x: 5, y: 5});
+	mainSnake = new Snake(5, 'red', 'white', {x: 5, y: 5});
 	this.loop = setInterval(game.runLoop, 60);
 };
 game.over = function(){
