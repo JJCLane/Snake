@@ -6,14 +6,14 @@ canvas.context = canvas.element.getContext('2d');
 canvas.width = canvas.element.getAttribute('width');
 canvas.height = canvas.element.getAttribute('height');
 
-canvas.initDraw = function(fillColour, strokeColour){
+canvas.redraw = function(fillColour, strokeColour){
 	this.context.fillStyle = fillColour;
 	this.context.fillRect(0, 0, this.width, this.height);
 	this.context.strokeStyle = strokeColour;
 	this.context.strokeRect(0, 0, this.width, this.height);
 }
 
-canvas.initDraw('white', 'black');
+canvas.redraw('white', 'black');
 
 /**
 * The snake class creates and controls any snakes in the game.
@@ -28,6 +28,7 @@ function Snake(length, cellWidth, startingPos) {
 	this.length = length;
 	this.cellWidth = cellWidth;
 	this.array = [];
+	this.direction = 'right'
 	
 	var startingPos = startingPos;
 	this.create = function(){
@@ -42,10 +43,24 @@ Snake.prototype.move = function() {
 	var nx = this.array[0].x;
 	var ny = this.array[0].y;
 
-	nx++;
+	switch(this.direction) {
+		case 'right':
+			nx++;
+			break;
+		case 'left':
+			nx--;
+			break;
+		case 'up':
+			ny--;
+			break;
+		case 'down':
+			ny++;
+			break;
+	}
 
 	var tail = this.array.pop();
 	tail.x = nx;
+	tail.y = ny;
 	this.array.unshift(tail);
 
 
@@ -53,6 +68,7 @@ Snake.prototype.move = function() {
 }
 
 Snake.prototype.paint = function() {
+	canvas.redraw('white', 'black');
 	for(var i = 0; i < this.array.length; i++) {
 		// The current snake body element
 		var j = this.array[i];
@@ -73,11 +89,19 @@ var game = new Object();
 game.runLoop = function(){
 	mainSnake.move();
 }
-game.loop = setInterval(game.runLoop, 1000);
+game.loop = setInterval(game.runLoop, 60);
 
 
 
 document.onkeydown = function(e) {
-	var code = (e.keyCode ? e.keyCode : e.which);
-	
+	var key = (e.keyCode ? e.keyCode : e.which);
+	if(key == "37" && mainSnake.direction != 'right') {
+		mainSnake.direction = 'left';
+	} else if(key == "38" && mainSnake.direction != 'down') {
+		mainSnake.direction = 'up';
+	} else if(key == "39" && mainSnake.direction != 'left') {
+		mainSnake.direction = 'right';
+	} else if(key == "40" && mainSnake.direction != 'up') {
+		mainSnake.direction = 'down';
+	}
 }
