@@ -1,5 +1,6 @@
 var canvas = new Object();
 var mainSnake;
+var food;
 
 
 canvas.element = document.getElementById('canvas');
@@ -23,9 +24,9 @@ canvas.paint = function(x, y, fillColour, strokeColour, width, height) {
 		strokeColour = strokeColour || 'white';
 
 	this.context.fillStyle = fillColour;
-	this.context.fillRect(x, y, width, height);
+	this.context.fillRect(x*canvas.cellWidth, y*canvas.cellWidth, width, height);
 	this.context.strokeStyle = strokeColour;
-	this.context.strokeRect(x, y, width, height);
+	this.context.strokeRect(x*canvas.cellWidth, y*canvas.cellWidth, width, height);
 };
 
 canvas.redraw();
@@ -95,7 +96,7 @@ Snake.prototype.paint = function() {
 		// The current snake body element
 		var j = this.array[i];
 
-		canvas.paint(j.x*canvas.cellWidth, j.y*canvas.cellWidth, this.bodyColour, this.outlineColour);
+		canvas.paint(j.x, j.y, this.bodyColour, this.outlineColour);
 	}
 }
 
@@ -106,13 +107,27 @@ Snake.prototype.outsideBounds = function(nx, ny) {
 	return false;
 }
 
+function Food() {
+	this.x = Math.round(Math.random() * (canvas.width-canvas.cellWidth)/canvas.cellWidth);
+	this.y = Math.round(Math.random() * (canvas.height-canvas.cellWidth)/canvas.cellWidth);
+	this.draw = function(){
+		console.log(this.x, this.y);
+		canvas.paint(this.x, this.y);
+	};
+	this.draw();
+
+}
+
 
 var game = new Object();
 game.runLoop = function(){
 	mainSnake.move();
+	food.draw();
+
 };
 game.start = function() {
 	mainSnake = new Snake(5, 'red', 'white', {x: 5, y: 5});
+	food = new Food();
 	this.loop = setInterval(game.runLoop, 60);
 };
 game.over = function(){
