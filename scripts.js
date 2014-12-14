@@ -17,8 +17,9 @@ canvas.initDraw('white', 'black');
 
 var snakeArray;
 
-function Snake(length) {
+function Snake(length, cellWidth) {
 	this.length = length;
+	this.cellWidth = cellWidth;
 	this.array = [];
 	this.create = function(){
 		for(var i = this.length-1; i>=0; i--) {
@@ -30,17 +31,20 @@ function Snake(length) {
 
 Snake.prototype.paint = function() {
 	for(var i = 0; i < this.array.length; i++) {
+		// The current snake body element
 		var j = this.array[i];
 
+		// Store argument properties to keep things DRY
+		var props = [j.x*this.cellWidth, j.y*this.cellWidth, this.cellWidth, this.cellWidth];
 		canvas.context.fillStyle = 'red';
-		canvas.context.fillRect(j.x*10, j.y*10, 10, 10);
+		canvas.context.fillRect(props[0], props[1], props[2], props[3]);
 		canvas.context.strokeStyle = 'yellow';
-		canvas.context.strokeRect(j.x*10, j.y*10, 10, 10);
+		canvas.context.strokeRect(props[0], props[1], props[2], props[3]);
 	}
 }
 
 
-var mainSnake = new Snake(5);
+var mainSnake = new Snake(5, 10);
 
 mainSnake.paint();
 
