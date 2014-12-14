@@ -148,34 +148,33 @@ function Food() {
 
 }
 
-
 var game = new Object();
+game.fps = 20;
 game.score = 0;
 game.scoreText = 'Score: ';
 game.drawScore = function() {
-	console.log(this);
 	canvas.paintText(this.scoreText + this.score);
 };
 game.runLoop = function(){
-	mainSnake.move();
-	food.draw();
-	game.drawScore();
-
+	setTimeout(function() {
+        requestAnimationFrame(game.runLoop);
+		mainSnake.move();
+		food.draw();
+		game.drawScore();
+    }, 1000 / game.fps);
 };
 game.start = function() {
 	mainSnake = new Snake(5, 'red', 'white', {x: 5, y: 5});
 	food = new Food();
 	game.score = 0;
-	this.loop = setInterval(game.runLoop, 60);
 };
 game.over = function(){
-	clearInterval(this.loop);
 	canvas.redraw();
 	this.start();
 };
 
 game.start();
-
+game.runLoop();
 
 
 document.onkeydown = function(e) {
@@ -192,4 +191,35 @@ document.onkeydown = function(e) {
 			mainSnake.direction = 'down';
 		}
 	}
+}
+
+
+// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+// requestAnimationFrame polyfill by Erik Möller
+// fixes from Paul Irish and Tino Zijdel
+ 
+var lastTime = 0;
+var vendors = ['ms', 'moz', 'webkit', 'o'];
+for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+    window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+    window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
+                               || window[vendors[x]+'CancelRequestAnimationFrame'];
+}
+ 
+if (!window.requestAnimationFrame) {
+    window.requestAnimationFrame = function(callback, element) {
+        var currTime = new Date().getTime();
+        var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+        var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+          timeToCall);
+        lastTime = currTime + timeToCall;
+        return id;
+    };
+}
+ 
+if (!window.cancelAnimationFrame) {
+    window.cancelAnimationFrame = function(id) {
+        clearTimeout(id);
+    };
 }
