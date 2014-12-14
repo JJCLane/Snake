@@ -15,3 +15,26 @@ canvas.initDraw = function(fillColour, strokeColour){
 
 canvas.initDraw('white', 'black');
 
+var snakeArray;
+
+function Snake(length) {
+	this.length = length;
+	this.array = [];
+	this.create = function(){
+		for(var i = this.length-1; i>=0; i--){
+			this.array.push({x: i, y: 0});
+		}
+	};
+	this.create();
+}
+
+
+var mainSnake = new Snake(5);
+
+console.log(mainSnake.array);
+
+
+document.onkeydown = function(e) {
+	var code = (e.keyCode ? e.keyCode : e.which);
+	
+}
