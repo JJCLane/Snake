@@ -21,17 +21,28 @@ function Snake(length) {
 	this.length = length;
 	this.array = [];
 	this.create = function(){
-		for(var i = this.length-1; i>=0; i--){
+		for(var i = this.length-1; i>=0; i--) {
 			this.array.push({x: i, y: 0});
 		}
 	};
 	this.create();
 }
 
+Snake.prototype.paint = function() {
+	for(var i = 0; i < this.array.length; i++) {
+		var j = this.array[i];
+
+		canvas.context.fillStyle = 'red';
+		canvas.context.fillRect(j.x*10, j.y*10, 10, 10);
+		canvas.context.strokeStyle = 'yellow';
+		canvas.context.strokeRect(j.x*10, j.y*10, 10, 10);
+	}
+}
+
 
 var mainSnake = new Snake(5);
 
-console.log(mainSnake.array);
+mainSnake.paint();
 
 
 document.onkeydown = function(e) {
