@@ -47,6 +47,8 @@ function Snake(length, bodyColour, outlineColour, startingPos) {
 	this.outlineColour = outlineColour;
 	this.array = [];
 	this.direction = 'right';
+	this.nx; // Next x pos
+	this.ny; // Next y pos
 	
 	var startingPos = startingPos;
 	this.create = function(){
@@ -58,37 +60,37 @@ function Snake(length, bodyColour, outlineColour, startingPos) {
 }
 
 Snake.prototype.move = function() {
-	var nx = this.array[0].x;
-	var ny = this.array[0].y;
+	this.nx = this.array[0].x;
+	this.ny = this.array[0].y;
 	var tail;
 
 	switch(this.direction) {
 		case 'right':
-			nx++;
+			this.nx++;
 			break;
 		case 'left':
-			nx--;
+			this.nx--;
 			break;
 		case 'up':
-			ny--;
+			this.ny--;
 			break;
 		case 'down':
-			ny++;
+			this.ny++;
 			break;
 	}
 
-	if(this.outsideBounds(nx, ny)) {
+	if(this.outsideBounds() || this.colliding()) {
 		game.over();
 		return;
 	}
 
-	if(this.eatingFood(nx, ny)) {
-		tail = {x: nx, y: ny};
+	if(this.eatingFood()) {
+		tail = {x: this.nx, y: this.ny};
 		food = new Food();
 	} else {
 		var tail = this.array.pop();
-		tail.x = nx;
-		tail.y = ny;
+		tail.x = this.nx;
+		tail.y = this.ny;
 	}
 
 	this.array.unshift(tail);
@@ -106,16 +108,25 @@ Snake.prototype.paint = function() {
 	}
 }
 
-Snake.prototype.outsideBounds = function(nx, ny) {
-	if(nx <= -1 || nx === canvas.width/canvas.cellWidth || ny <= -1 || ny === canvas.height/canvas.cellWidth) {
+Snake.prototype.outsideBounds = function() {
+	if(this.nx <= -1 || this.nx === canvas.width/canvas.cellWidth || this.ny <= -1 || this.ny === canvas.height/canvas.cellWidth) {
 		return true;
 	}
 	return false;
 }
 
-Snake.prototype.eatingFood = function(nx, ny) {
-	if(nx === food.x && ny === food.y) {
+Snake.prototype.eatingFood = function() {
+	if(this.nx === food.x && this.ny === food.y) {
 		return true;
+	}
+	return false;
+}
+
+Snake.prototype.colliding = function() {
+	for(var i = 0; i < this.array.length; i++) {
+		if(this.array[i].x === this.nx && this.array[i].y === this.ny) {
+			return true;
+		}
 	}
 	return false;
 }
