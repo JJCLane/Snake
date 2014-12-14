@@ -17,13 +17,16 @@ canvas.initDraw('white', 'black');
 
 var snakeArray;
 
-function Snake(length, cellWidth) {
+function Snake(length, cellWidth, startingPosX, startingPosY) {
 	this.length = length;
 	this.cellWidth = cellWidth;
 	this.array = [];
+	
+	var startingPosX = startingPosX;
+	var startingPosY = startingPosY;
 	this.create = function(){
 		for(var i = this.length-1; i>=0; i--) {
-			this.array.push({x: i, y: 0});
+			this.array.push({x: startingPosX + i, y: startingPosY});
 		}
 	};
 	this.create();
@@ -44,7 +47,7 @@ Snake.prototype.paint = function() {
 }
 
 
-var mainSnake = new Snake(5, 10);
+var mainSnake = new Snake(5, 10, 5, 5);
 
 mainSnake.paint();
 
