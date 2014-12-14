@@ -60,6 +60,7 @@ function Snake(length, bodyColour, outlineColour, startingPos) {
 Snake.prototype.move = function() {
 	var nx = this.array[0].x;
 	var ny = this.array[0].y;
+	var tail;
 
 	switch(this.direction) {
 		case 'right':
@@ -81,11 +82,16 @@ Snake.prototype.move = function() {
 		return;
 	}
 
-	var tail = this.array.pop();
-	tail.x = nx;
-	tail.y = ny;
-	this.array.unshift(tail);
+	if(this.eatingFood(nx, ny)) {
+		tail = {x: nx, y: ny};
+		food = new Food();
+	} else {
+		var tail = this.array.pop();
+		tail.x = nx;
+		tail.y = ny;
+	}
 
+	this.array.unshift(tail);
 
 	this.paint();
 }
@@ -102,6 +108,13 @@ Snake.prototype.paint = function() {
 
 Snake.prototype.outsideBounds = function(nx, ny) {
 	if(nx <= -1 || nx === canvas.width/canvas.cellWidth || ny <= -1 || ny === canvas.height/canvas.cellWidth) {
+		return true;
+	}
+	return false;
+}
+
+Snake.prototype.eatingFood = function(nx, ny) {
+	if(nx === food.x && ny === food.y) {
 		return true;
 	}
 	return false;
