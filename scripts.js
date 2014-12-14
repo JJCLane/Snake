@@ -15,18 +15,24 @@ canvas.initDraw = function(fillColour, strokeColour){
 
 canvas.initDraw('white', 'black');
 
-var snakeArray;
-
-function Snake(length, cellWidth, startingPosX, startingPosY) {
+/**
+* The snake class creates and controls any snakes in the game.
+*
+* @class Snake
+* @constructor
+* @param {int} length The intial length of the snake
+* @param {int} cellWidth The width of each snake body part
+* @param {object} startingPos The X and Y position for the snake spawn
+*/
+function Snake(length, cellWidth, startingPos) {
 	this.length = length;
 	this.cellWidth = cellWidth;
 	this.array = [];
 	
-	var startingPosX = startingPosX;
-	var startingPosY = startingPosY;
+	var startingPos = startingPos;
 	this.create = function(){
 		for(var i = this.length-1; i>=0; i--) {
-			this.array.push({x: startingPosX + i, y: startingPosY});
+			this.array.push({x: startingPos.x + i, y: startingPos.y});
 		}
 	};
 	this.create();
@@ -47,7 +53,7 @@ Snake.prototype.paint = function() {
 }
 
 
-var mainSnake = new Snake(5, 10, 5, 5);
+var mainSnake = new Snake(5, 10, {x: 5, y: 5});
 
 mainSnake.paint();
 
