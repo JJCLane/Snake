@@ -38,6 +38,20 @@ function Snake(length, cellWidth, startingPos) {
 	this.create();
 }
 
+Snake.prototype.move = function() {
+	var nx = this.array[0].x;
+	var ny = this.array[0].y;
+
+	nx++;
+
+	var tail = this.array.pop();
+	tail.x = nx;
+	this.array.unshift(tail);
+
+
+	this.paint();
+}
+
 Snake.prototype.paint = function() {
 	for(var i = 0; i < this.array.length; i++) {
 		// The current snake body element
@@ -55,7 +69,12 @@ Snake.prototype.paint = function() {
 
 var mainSnake = new Snake(5, 10, {x: 5, y: 5});
 
-mainSnake.paint();
+var game = new Object();
+game.runLoop = function(){
+	mainSnake.move();
+}
+game.loop = setInterval(game.runLoop, 1000);
+
 
 
 document.onkeydown = function(e) {
