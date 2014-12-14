@@ -13,11 +13,20 @@ canvas.redraw = function(fillColour, strokeColour){
 	var fillColour = fillColour || 'white',
 		strokeColour = strokeColour || 'black';
 
-	this.context.fillStyle = fillColour;
-	this.context.fillRect(0, 0, this.width, this.height);
-	this.context.strokeStyle = strokeColour;
-	this.context.strokeRect(0, 0, this.width, this.height);
+	this.paint(0, 0, fillColour, strokeColour, this.width, this.height);
 }
+
+canvas.paint = function(x, y, fillColour, strokeColour, width, height) {
+	var width = width || this.cellWidth,
+		height = height || this.cellWidth,
+		fillColour = fillColour || 'red',
+		strokeColour = strokeColour || 'white';
+
+	this.context.fillStyle = fillColour;
+	this.context.fillRect(x, y, width, height);
+	this.context.strokeStyle = strokeColour;
+	this.context.strokeRect(x, y, width, height);
+};
 
 canvas.redraw();
 
@@ -86,12 +95,7 @@ Snake.prototype.paint = function() {
 		// The current snake body element
 		var j = this.array[i];
 
-		// Store argument properties to keep things DRY
-		var props = [j.x*canvas.cellWidth, j.y*canvas.cellWidth, canvas.cellWidth, canvas.cellWidth];
-		canvas.context.fillStyle = this.bodyColour;
-		canvas.context.fillRect(props[0], props[1], props[2], props[3]);
-		canvas.context.strokeStyle = this.outlineColour;
-		canvas.context.strokeRect(props[0], props[1], props[2], props[3]);
+		canvas.paint(j.x*canvas.cellWidth, j.y*canvas.cellWidth, this.bodyColour, this.outlineColour);
 	}
 }
 
