@@ -53,6 +53,7 @@ function Snake(length, bodyColour, outlineColour, startingPos) {
 	this.outlineColour = outlineColour;
 	this.array = [];
 	this.direction = 'right';
+	this.nd = []; // Next direction
 	this.nx; // Next x pos
 	this.ny; // Next y pos
 	
@@ -66,6 +67,10 @@ function Snake(length, bodyColour, outlineColour, startingPos) {
 }
 
 Snake.prototype.move = function() {
+	if (this.nd.length) {
+		this.direction = this.nd.shift();
+	}
+
 	this.nx = this.array[0].x;
 	this.ny = this.array[0].y;
 	var tail;
@@ -198,14 +203,20 @@ document.onkeydown = function(e) {
 	if(typeof mainSnake !== 'undefined'){
 		// Cross browser keycode detection
 		var key = (e.keyCode ? e.keyCode : e.which);
+		var td;
+		if (mainSnake.nd.length) {
+			td = mainSnake.nd[mainSnake.nd.length - 1];
+		} else {
+			td = mainSnake.direction;
+		}
 		if(key == "37" && mainSnake.direction != 'right') {
-			mainSnake.direction = 'left';
+			mainSnake.nd.push('left');
 		} else if(key == "38" && mainSnake.direction != 'down') {
-			mainSnake.direction = 'up';
+			mainSnake.nd.push('up');
 		} else if(key == "39" && mainSnake.direction != 'left') {
-			mainSnake.direction = 'right';
+			mainSnake.nd.push('right');
 		} else if(key == "40" && mainSnake.direction != 'up') {
-			mainSnake.direction = 'down';
+			mainSnake.nd.push('down');
 		}
 	}
 }
