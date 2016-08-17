@@ -209,13 +209,13 @@ document.onkeydown = function(e) {
 		} else {
 			td = mainSnake.direction;
 		}
-		if(key == "37" && mainSnake.direction != 'right') {
+		if(key == "37" && td != 'right') {
 			mainSnake.nd.push('left');
-		} else if(key == "38" && mainSnake.direction != 'down') {
+		} else if(key == "38" && td != 'down') {
 			mainSnake.nd.push('up');
-		} else if(key == "39" && mainSnake.direction != 'left') {
+		} else if(key == "39" && td != 'left') {
 			mainSnake.nd.push('right');
-		} else if(key == "40" && mainSnake.direction != 'up') {
+		} else if(key == "40" && td != 'up') {
 			mainSnake.nd.push('down');
 		}
 	}
