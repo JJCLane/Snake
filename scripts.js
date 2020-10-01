@@ -65,7 +65,7 @@ function Snake(length, bodyColour, outlineColour, startingPos) {
 	};
 	this.create();
 }
-
+var speed = 0.5
 Snake.prototype.move = function() {
 	if (this.nd.length) {
 		this.direction = this.nd.shift();
@@ -77,16 +77,16 @@ Snake.prototype.move = function() {
 
 	switch(this.direction) {
 		case 'right':
-			this.nx++;
+			this.nx += speed;
 			break;
 		case 'left':
-			this.nx--;
+			this.nx -= speed;
 			break;
 		case 'up':
-			this.ny--;
+			this.ny -= speed;
 			break;
 		case 'down':
-			this.ny++;
+			this.ny += speed;
 			break;
 	}
 
@@ -251,3 +251,8 @@ if (!window.cancelAnimationFrame) {
         clearTimeout(id);
     };
 }
+function easy(){speed = 0.4}
+
+function normal(){ speed = 0.8}
+
+function hard(){speed = 1.2}
