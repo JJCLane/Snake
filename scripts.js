@@ -65,7 +65,7 @@ function Snake(length, bodyColour, outlineColour, startingPos) {
 	};
 	this.create();
 }
-
+var speed = 10
 Snake.prototype.move = function() {
 	if (this.nd.length) {
 		this.direction = this.nd.shift();
@@ -77,16 +77,16 @@ Snake.prototype.move = function() {
 
 	switch(this.direction) {
 		case 'right':
-			this.nx++;
+			this.nx++
 			break;
 		case 'left':
-			this.nx--;
+			this.nx--
 			break;
 		case 'up':
-			this.ny--;
+			this.ny--
 			break;
 		case 'down':
-			this.ny++;
+			this.ny++
 			break;
 	}
 
@@ -169,13 +169,15 @@ function Food() {
 }
 
 var game = new Object();
-game.fps = 20;
+game.fps = speed;
 game.score = 0;
 game.scoreText = 'Score: ';
 game.drawScore = function() {
 	canvas.paintText(this.scoreText + this.score);
 };
+var a = 1
 game.runLoop = function(){
+	if(a >= 1){
 	setTimeout(function() {
         requestAnimationFrame(game.runLoop);
 		mainSnake.move();
@@ -183,7 +185,9 @@ game.runLoop = function(){
 			food.draw();
 		}
 		game.drawScore();
-    }, 1000 / game.fps);
+	}, 1000 / speed);
+	a++
+}
 };
 game.start = function() {
 	mainSnake = new Snake(10, 'red', 'white', {x: 5, y: 5});
@@ -250,4 +254,47 @@ if (!window.cancelAnimationFrame) {
     window.cancelAnimationFrame = function(id) {
         clearTimeout(id);
     };
+}
+var bt = document.getElementById('buttons')
+function str(e){
+	a = 1
+	game.runLoop()
+	bt.style.display = 'none';
+	if(e == 'bt1'){
+		game.over();
+		return;
+	}
+}
+function change(p) {
+	
+	if (p.value == 'Easy Mode') {
+		a = 0
+		bt.style.display = 'block';
+		speed = 5
+		
+		
+	}
+	if (p.value == 'Normal Mode') {
+		a = 0
+		bt.style.display = 'block';
+		speed = 10
+	}
+	if (p.value == 'Hard Mode') {
+		a = 0
+		bt.style.display = 'block';
+		speed = 20
+	}
+	
+	if (p.value == 'Harder Mode') {
+		a = 0
+		bt.style.display = 'block';
+		speed = 25
+	}
+	
+	if (p.value == 'Expert Mode') {
+		a = 0
+		bt.style.display = 'block';
+		speed = 30
+	}
+
 }
